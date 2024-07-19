@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"time"
-
+	"encoding/json"
 )
 
 type StorageService struct {
@@ -19,11 +19,38 @@ var (
 
 const cacheDuration = 6 * time.Hour
 
+type Config struct{
+	redisPassword string `json:"store_pwd"`
+}
+
+
+func loadConfig(file string) (*Config, error){
+	var config Config
+	configFile, err := os.Open(file)
+	if err != nil {
+        return nil, err
+    }
+    defer configFile.Close()
+
+    bytes, err := ioutil.ReadAll(configFile)
+    if err != nil {
+        return nil, err
+    }
+
+    err = json.Unmarshal(bytes, &config)
+    if err != nil {
+        return nil, err
+    }
+
+    return &config, nil
+}
+
 
 func InitializeStore() *StorageService{
+	config, err := loadConfig("config.json")
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: "redis-16324.c81.us-east-1-2.ec2.redns.redis-cloud.com:16324",
-		Password: "ODaymZn9TezzCDBKYyI8BgKiZ2W4G3Bn",
+		Password: config.redisPassword,
 		DB: 0,
 	})
 

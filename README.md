@@ -16,3 +16,7 @@ The project albeit small has 3 main parts to it:
 
 Additonally, testing scripts for both store and shortener module were written to make sure that the code performs as expected. Leveraged testing library to carry out this task.
 
+### Next Steps:
+    1. Dockerize the service and deploy it as an image which can be run on any VM.
+    2. Create a frontend for users to interact with the service easily.
+

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"time"
-	"encoding/json"
 )
 
 type StorageService struct {
@@ -17,40 +16,13 @@ var (
 	ctx = context.Background()
 )
 
-const cacheDuration = 6 * time.Hour
-
-type Config struct{
-	redisPassword string `json:"store_pwd"`
-}
-
-
-func loadConfig(file string) (*Config, error){
-	var config Config
-	configFile, err := os.Open(file)
-	if err != nil {
-        return nil, err
-    }
-    defer configFile.Close()
-
-    bytes, err := ioutil.ReadAll(configFile)
-    if err != nil {
-        return nil, err
-    }
-
-    err = json.Unmarshal(bytes, &config)
-    if err != nil {
-        return nil, err
-    }
-
-    return &config, nil
-}
+const CacheDuration = 6 * time.Hour
 
 
 func InitializeStore() *StorageService{
-	config, err := loadConfig("config.json")
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: "redis-16324.c81.us-east-1-2.ec2.redns.redis-cloud.com:16324",
-		Password: config.redisPassword,
+		Password: "",
 		DB: 0,
 	})
 
@@ -67,9 +39,11 @@ func InitializeStore() *StorageService{
 
 
 func SaveUrlMapping(shortUrl string, originalUrl string, userId string){
-
-	err := storeService.redisClient.Set(ctx, shortUrl, originalUrl, cacheDuration).Err()
+	fmt.Printf("Called Save URL mapping")
+	storeService := InitializeStore()
+	err := storeService.redisClient.Set(ctx, shortUrl, originalUrl, CacheDuration).Err()
 	if err != nil{
+		fmt.Printf("Error")
 		panic(fmt.Sprintf("Failed saving key URL | Error %v - shorturl %s - orginalurl %s \n", err, shortUrl,originalUrl))
 	}
 	fmt.Printf("Saved shortUrl: %s - originalUrl: %s\n", shortUrl, originalUrl)

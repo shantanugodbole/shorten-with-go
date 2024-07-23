@@ -2,7 +2,7 @@ package main
 
 import ("fmt" 
 		"github.com/gin-gonic/gin"
-
+		"go/url-shortener/handler"
 )
 
 func main () {
@@ -14,12 +14,13 @@ func main () {
 	})
 
 	r.POST("/create-short-url", func(c *gin.Context){
-		handler.createShortUrl(c)
+		handler.CreateShortUrl(c)
+		
 
 	})
 
 	r.GET("/:shortUrl", func(c *gin.Context){
-		handler.handleShortUrlRedirect()
+		handler.HandleShortUrlRedirect(c)
 	})
 
 	err := r.Run(":9808")

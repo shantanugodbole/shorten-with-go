@@ -22,7 +22,7 @@ const CacheDuration = 6 * time.Hour
 func InitializeStore() *StorageService{
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: "redis-16324.c81.us-east-1-2.ec2.redns.redis-cloud.com:16324",
-		Password: "",
+		Password: "ODaymZn9TezzCDBKYyI8BgKiZ2W4G3Bn",
 		DB: 0,
 	})
 
